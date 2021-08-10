@@ -2,7 +2,7 @@
 package controllers
 
 import (
-	"github.com/2rueSid/go-api-example/src/models"
+	"github.com/2rueSid/go-api-example/src/models/user"
 	"github.com/2rueSid/go-api-example/src/types"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,7 +16,7 @@ func SignUp(ctx *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	user, err := models.CreateUser(body)
+	user, err := user.Create(body)
 
 	if err != nil {
 		return fiber.ErrConflict
