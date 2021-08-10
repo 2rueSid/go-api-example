@@ -5,6 +5,8 @@ package main
 import (
 	"context"
 
+	"github.com/2rueSid/go-api-example/src/types"
+
 	"github.com/2rueSid/go-api-example/prisma/db"
 	"github.com/gofiber/fiber/v2"
 )
@@ -55,16 +57,17 @@ func Users() ([]db.UserModel, error) {
 	return users, nil
 }
 
-/* Create new user.
+/*
+	Create new user.
 
-body should accept
-
-username - string
-email - string
-password - string */
+	@body
+	username - string
+	email - string
+    password - string
+*/
 func CreateUser(c *fiber.Ctx) error {
 
-	body := new(CreateUserDto)
+	body := new(types.CreateUser)
 
 	if err := c.BodyParser(body); err != nil {
 		return fiber.ErrBadRequest
@@ -94,10 +97,4 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(createdUser)
-}
-
-type CreateUserDto struct {
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Password string `json:"password"`
 }
