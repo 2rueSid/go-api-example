@@ -2,8 +2,12 @@
 package controllers
 
 import (
+	"time"
+
+	"github.com/2rueSid/go-api-example/src/config"
 	"github.com/2rueSid/go-api-example/src/models/user"
 	"github.com/2rueSid/go-api-example/src/types"
+	"github.com/golang-jwt/jwt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -48,5 +52,20 @@ func SignIn(ctx *fiber.Ctx) error {
 		return fiber.NewError(status, err.Error())
 	}
 
-	return ctx.JSON(user)
+	token := jwt.New(jwt.SigningMethodHS256)
+	expiration := time.Now().Add(time.Hour * 72).Unix()
+
+	claims := token.Claims.(jwt.MapClaims)
+	claims["user"] = user
+	claims["exp"] = expiration
+
+	signed, err := token.SignedString([]byte(config.JWT_SECRET))
+
+	if err != nil {
+		return fiber.NewError(500, "server error")
+	}
+
+	authorizedUser := &types.AuthorizedUser{User: user, Token: signed}
+
+	return ctx.JSON(authorizedUser)
 }

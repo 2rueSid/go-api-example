@@ -17,3 +17,8 @@ type UserOutput struct {
 	Err       error
 	ErrStatus int
 }
+
+type AuthorizedUser struct {
+	User  *db.UserModel `json:"user"`
+	Token string        `json:"token"`
+}

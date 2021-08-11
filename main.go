@@ -12,6 +12,8 @@ import (
 func main() {
 	app := fiber.New()
 
+	config.Initialize(*app)
+
 	routes.Initialize(app)
 
 	app.Listen(config.PORT)
