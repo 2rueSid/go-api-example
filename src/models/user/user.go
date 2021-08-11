@@ -10,18 +10,27 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var (
+const (
 	DEFAULT_COST = 10
 )
 
-// Function that creates user, and save it to the users table
-func Create(user *types.CreateUser) (*db.UserModel, error) {
-	client := database.Connect()
+var (
+	client = database.Connect()
+)
 
+// Function that creates user, and save it to the users table
+func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
 	password, err := hashPassword(user.Password)
 
 	if err != nil {
-		return nil, errors.New("error while trying to hash password")
+		result := &types.UserOutput{
+			User:      nil,
+			ErrStatus: 500,
+			Err:       errors.New("error while trying to hash password"),
+		}
+
+		chanel <- result
+		return
 	}
 
 	createdUser, err := client.User.CreateOne(
@@ -30,10 +39,46 @@ func Create(user *types.CreateUser) (*db.UserModel, error) {
 		db.User.Password.Set(password)).Exec(database.Context)
 
 	if err != nil {
-		return nil, errors.New("user not created")
+		result := &types.UserOutput{
+			User:      nil,
+			ErrStatus: 500,
+			Err:       errors.New("user not created"),
+		}
+
+		chanel <- result
+		return
 	}
 
-	return createdUser, nil
+	result := &types.UserOutput{User: createdUser, Err: nil, ErrStatus: 0}
+
+	chanel <- result
+}
+
+// Function that accepts user data, and return user if it's exists or return an error
+func SignIn(data *types.UserInput, chanel chan<- *types.UserOutput) {
+	user, err := client.User.FindUnique(db.User.EmailUsername(db.User.Email.Equals(data.Email), db.User.Username.Equals(data.Username))).Exec(database.Context)
+
+	if err != nil {
+		result := &types.UserOutput{
+			User:      nil,
+			ErrStatus: 404,
+			Err:       errors.New("user not exists"),
+		}
+
+		chanel <- result
+	}
+
+	if err := comparePasswords(user.Password, data.Password); err != nil {
+		result := &types.UserOutput{
+			User:      nil,
+			ErrStatus: 403,
+			Err:       errors.New("passwords are not the same"),
+		}
+
+		chanel <- result
+	}
+
+	chanel <- &types.UserOutput{User: user, Err: nil}
 }
 
 // Hash given password, and return a hash
@@ -47,10 +92,11 @@ func hashPassword(password string) (string, error) {
 	return string(value), nil
 }
 
-// func comparePasswords(hashed string, password string) error {
-// 	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)); err != nil {
-// 		return errors.New("passwords not same")
-// 	}
+// Compare passwords, and return error if they are not the same
+func comparePasswords(hashed string, password string) error {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)); err != nil {
+		return errors.New("passwords not same")
+	}
 
-// 	return nil
-// }
+	return nil
+}
