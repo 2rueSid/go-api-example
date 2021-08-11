@@ -16,6 +16,19 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime  @default(now())
 
+  UserTokens UserTokens[]
+
   @@unique([email, username])
   @@map("users")
+}
+
+model UserTokens {
+  id       Int      @id @default(autoincrement())
+  user_id  Int
+  lifetime DateTime
+  token    String   @unique
+
+  User User @relation(fields: [user_id], references: [id])
+
+  @@map("user_tokens")
 }
