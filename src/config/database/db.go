@@ -1,5 +1,5 @@
-// package to define config
-package config
+// package to define database connection config
+package database
 
 import (
 	"context"
