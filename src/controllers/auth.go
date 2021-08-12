@@ -13,6 +13,7 @@ import (
 	"github.com/golang-jwt/jwt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/utils"
 )
 
 // Controller that responsible for creating user
@@ -37,7 +38,7 @@ func SignUp(ctx *fiber.Ctx) error {
 	authorizedUser, err := generateSignInToken(user)
 
 	if err != nil {
-		return fiber.NewError(500, "server error")
+		return fiber.NewError(500, err.Error())
 	}
 
 	return ctx.JSON(authorizedUser)
@@ -65,7 +66,7 @@ func SignIn(ctx *fiber.Ctx) error {
 	authorizedUser, err := generateSignInToken(user)
 
 	if err != nil {
-		return fiber.NewError(500, "server error")
+		return fiber.NewError(500, err.Error())
 	}
 
 	return ctx.JSON(authorizedUser)
@@ -86,7 +87,7 @@ func generateSignInToken(user *db.UserModel) (*types.AuthorizedUser, error) {
 	signed, err := token.SignedString([]byte(config.JWT_SECRET))
 
 	if err != nil {
-		return nil, errors.New("server error")
+		return nil, errors.New(utils.StatusMessage(500))
 	}
 
 	go tokenModel.Create(
@@ -95,7 +96,7 @@ func generateSignInToken(user *db.UserModel) (*types.AuthorizedUser, error) {
 	)
 
 	if tokenResult := <-tokenC; tokenResult.Err != nil {
-		return nil, errors.New("server error")
+		return nil, errors.New(utils.StatusMessage(500))
 	}
 
 	return &types.AuthorizedUser{Token: signed}, nil

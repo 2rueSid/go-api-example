@@ -7,6 +7,7 @@ import (
 	"github.com/2rueSid/go-api-example/prisma/db"
 	"github.com/2rueSid/go-api-example/src/config/database"
 	"github.com/2rueSid/go-api-example/src/types"
+	"github.com/gofiber/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -28,7 +29,7 @@ func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
 		result := &types.UserOutput{
 			User:      nil,
 			ErrStatus: 500,
-			Err:       errors.New("error while trying to hash password"),
+			Err:       errors.New(utils.StatusMessage(500)),
 		}
 
 		chanel <- result
@@ -44,7 +45,7 @@ func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
 		result := &types.UserOutput{
 			User:      nil,
 			ErrStatus: 500,
-			Err:       errors.New("user not created"),
+			Err:       errors.New(utils.StatusMessage(500)),
 		}
 
 		chanel <- result
@@ -67,7 +68,7 @@ func SignIn(data *types.UserInput, chanel chan<- *types.UserOutput) {
 		result := &types.UserOutput{
 			User:      nil,
 			ErrStatus: 404,
-			Err:       errors.New("user not exists"),
+			Err:       errors.New(utils.StatusMessage(404)),
 		}
 
 		chanel <- result
@@ -76,8 +77,8 @@ func SignIn(data *types.UserInput, chanel chan<- *types.UserOutput) {
 	if err := comparePasswords(user.Password, data.Password); err != nil {
 		result := &types.UserOutput{
 			User:      nil,
-			ErrStatus: 403,
-			Err:       errors.New("passwords are not the same"),
+			ErrStatus: 401,
+			Err:       errors.New(utils.StatusMessage(401)),
 		}
 
 		chanel <- result
@@ -91,7 +92,7 @@ func hashPassword(password string) (string, error) {
 	value, err := bcrypt.GenerateFromPassword([]byte(password), DEFAULT_COST)
 
 	if err != nil {
-		return "", nil
+		return "", errors.New("err")
 	}
 
 	return string(value), nil
@@ -100,7 +101,7 @@ func hashPassword(password string) (string, error) {
 // Compare passwords, and return error if they are not the same
 func comparePasswords(hashed string, password string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)); err != nil {
-		return errors.New("passwords not same")
+		return errors.New("err")
 	}
 
 	return nil
