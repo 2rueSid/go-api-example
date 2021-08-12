@@ -10,7 +10,9 @@ import (
 
 // Variables which used in database queries
 var (
-	Client  = db.NewClient()
+	// Initialize Database connection instance
+	Client = db.NewClient()
+	// Get context that use within the prisma connections
 	Context = context.Background()
 )
 

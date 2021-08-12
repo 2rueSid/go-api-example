@@ -2,8 +2,15 @@
 package controllers
 
 import (
+	"errors"
+	"time"
+
+	"github.com/2rueSid/go-api-example/prisma/db"
+	"github.com/2rueSid/go-api-example/src/config"
+	tokenModel "github.com/2rueSid/go-api-example/src/models/token"
 	"github.com/2rueSid/go-api-example/src/models/user"
 	"github.com/2rueSid/go-api-example/src/types"
+	"github.com/golang-jwt/jwt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -26,7 +33,14 @@ func SignUp(ctx *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(status, err.Error())
 	}
-	return ctx.JSON(user)
+
+	authorizedUser, err := generateSignInToken(user)
+
+	if err != nil {
+		return fiber.NewError(500, "server error")
+	}
+
+	return ctx.JSON(authorizedUser)
 }
 
 // Controller that responsible for sign in user
@@ -48,5 +62,41 @@ func SignIn(ctx *fiber.Ctx) error {
 		return fiber.NewError(status, err.Error())
 	}
 
-	return ctx.JSON(user)
+	authorizedUser, err := generateSignInToken(user)
+
+	if err != nil {
+		return fiber.NewError(500, "server error")
+	}
+
+	return ctx.JSON(authorizedUser)
+}
+
+// Generates and save JWT token to the database
+// Also, return generated token, which is send to the frontend
+func generateSignInToken(user *db.UserModel) (*types.AuthorizedUser, error) {
+	tokenC := make(chan *types.TokenOutput)
+
+	token := jwt.New(jwt.SigningMethodHS256)
+	expiration := time.Now().Add(time.Hour * 72).Unix()
+
+	claims := token.Claims.(jwt.MapClaims)
+	claims["user"] = user
+	claims["exp"] = expiration
+
+	signed, err := token.SignedString([]byte(config.JWT_SECRET))
+
+	if err != nil {
+		return nil, errors.New("server error")
+	}
+
+	go tokenModel.Create(
+		&types.Token{UserId: user.ID, Token: signed, Expiration: expiration},
+		tokenC,
+	)
+
+	if tokenResult := <-tokenC; tokenResult.Err != nil {
+		return nil, errors.New("server error")
+	}
+
+	return &types.AuthorizedUser{Token: signed}, nil
 }

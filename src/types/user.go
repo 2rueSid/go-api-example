@@ -17,3 +17,9 @@ type UserOutput struct {
 	Err       error
 	ErrStatus int
 }
+
+// Output that has user instance and generated JWT token,
+// that passed to the frontend to implement JWT session
+type AuthorizedUser struct {
+	Token string `json:"token"`
+}
