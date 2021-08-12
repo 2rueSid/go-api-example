@@ -8,7 +8,7 @@ import (
 )
 
 // Function to define routes which applies to authorization functionality
-func AuthRoutes(app fiber.Router) {
+func AuthRoutes(app *fiber.App) {
 	route := app.Group("/auth", logger.New())
 
 	route.Post("/signup", controllers.SignUp)

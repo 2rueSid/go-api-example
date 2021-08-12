@@ -14,9 +14,6 @@ func main() {
 	// Get fiber application instance
 	app := fiber.New()
 
-	// Initialize middlewares
-	config.Initialize(*app)
-
 	// Initialize routes
 	routes.Initialize(app)
 

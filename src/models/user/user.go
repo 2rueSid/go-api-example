@@ -44,8 +44,8 @@ func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
 	if err != nil {
 		result := &types.UserOutput{
 			User:      nil,
-			ErrStatus: 500,
-			Err:       errors.New(utils.StatusMessage(500)),
+			ErrStatus: 403,
+			Err:       errors.New(utils.StatusMessage(403)),
 		}
 
 		chanel <- result

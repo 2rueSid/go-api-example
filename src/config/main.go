@@ -6,8 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/gofiber/fiber/v2"
-	jwtware "github.com/gofiber/jwt/v2"
 	"github.com/joho/godotenv"
 )
 
@@ -18,13 +16,6 @@ var (
 	// JWT token secret
 	JWT_SECRET = getEnv("JWT_SECRET", "")
 )
-
-// Initialize middlewares
-func Initialize(app fiber.App) {
-	app.Use(jwtware.New(jwtware.Config{
-		SigningKey: []byte(JWT_SECRET),
-	}))
-}
 
 // Read env file and get variable by given name
 func getEnv(name string, fallback string) string {
