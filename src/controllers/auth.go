@@ -76,6 +76,5 @@ func SignIn(ctx *fiber.Ctx) error {
 	}
 
 	authorizedUser := &types.AuthorizedUser{User: user, Token: signed}
-
 	return ctx.JSON(authorizedUser)
 }

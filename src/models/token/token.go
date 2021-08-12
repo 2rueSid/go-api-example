@@ -23,7 +23,7 @@ func Create(token *types.Token, chanel chan<- *types.TokenOutput) {
 	).Exec(database.Context)
 
 	if err != nil {
-		result := &types.TokenOutput{Err: errors.New("token not crated"), ErrStatus: 500, Token: nil}
+		result := &types.TokenOutput{Err: errors.New("token not created"), ErrStatus: 500, Token: nil}
 
 		chanel <- result
 		return
