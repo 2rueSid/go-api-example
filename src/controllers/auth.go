@@ -2,8 +2,10 @@
 package controllers
 
 import (
+	"errors"
 	"time"
 
+	"github.com/2rueSid/go-api-example/prisma/db"
 	"github.com/2rueSid/go-api-example/src/config"
 	tokenModel "github.com/2rueSid/go-api-example/src/models/token"
 	"github.com/2rueSid/go-api-example/src/models/user"
@@ -31,13 +33,20 @@ func SignUp(ctx *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(status, err.Error())
 	}
-	return ctx.JSON(user)
+
+	authorizedUser, err := generateSignInToken(user)
+
+	if err != nil {
+		return fiber.NewError(500, "server error")
+	}
+
+	return ctx.JSON(authorizedUser)
 }
 
 // Controller that responsible for sign in user
 func SignIn(ctx *fiber.Ctx) error {
 	body := new(types.UserInput)
-	c, tokenC := make(chan *types.UserOutput), make(chan *types.TokenOutput)
+	c := make(chan *types.UserOutput)
 
 	if err := ctx.BodyParser(body); err != nil {
 		return fiber.ErrBadRequest
@@ -53,6 +62,20 @@ func SignIn(ctx *fiber.Ctx) error {
 		return fiber.NewError(status, err.Error())
 	}
 
+	authorizedUser, err := generateSignInToken(user)
+
+	if err != nil {
+		return fiber.NewError(500, "server error")
+	}
+
+	return ctx.JSON(authorizedUser)
+}
+
+// Generates and save JWT token to the database
+// Also, return generated token, which is send to the frontend
+func generateSignInToken(user *db.UserModel) (*types.AuthorizedUser, error) {
+	tokenC := make(chan *types.TokenOutput)
+
 	token := jwt.New(jwt.SigningMethodHS256)
 	expiration := time.Now().Add(time.Hour * 72).Unix()
 
@@ -63,7 +86,7 @@ func SignIn(ctx *fiber.Ctx) error {
 	signed, err := token.SignedString([]byte(config.JWT_SECRET))
 
 	if err != nil {
-		return fiber.NewError(500, "server error")
+		return nil, errors.New("server error")
 	}
 
 	go tokenModel.Create(
@@ -72,9 +95,8 @@ func SignIn(ctx *fiber.Ctx) error {
 	)
 
 	if tokenResult := <-tokenC; tokenResult.Err != nil {
-		return fiber.NewError(tokenResult.ErrStatus, tokenResult.Err.Error())
+		return nil, errors.New("server error")
 	}
 
-	authorizedUser := &types.AuthorizedUser{User: user, Token: signed}
-	return ctx.JSON(authorizedUser)
+	return &types.AuthorizedUser{Token: signed}, nil
 }

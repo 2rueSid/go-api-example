@@ -21,6 +21,5 @@ type UserOutput struct {
 // Output that has user instance and generated JWT token,
 // that passed to the frontend to implement JWT session
 type AuthorizedUser struct {
-	User  *db.UserModel `json:"user"`
-	Token string        `json:"token"`
+	Token string `json:"token"`
 }
