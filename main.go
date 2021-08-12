@@ -10,11 +10,16 @@ import (
 )
 
 func main() {
+	// Get fiber application instance
 	app := fiber.New()
 
+	// Initialize middlewares
 	config.Initialize(*app)
 
+	// Initialize routes
 	routes.Initialize(app)
 
+	// Run application on given PORT
+	// Default PORT equals to 3000
 	app.Listen(config.PORT)
 }

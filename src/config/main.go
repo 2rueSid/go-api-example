@@ -13,10 +13,13 @@ import (
 
 // List of used env variables
 var (
-	PORT       = getEnv("PORT", "3000")
+	// Default Port
+	PORT = getEnv("PORT", "3000")
+	// JWT token secret
 	JWT_SECRET = getEnv("JWT_SECRET", "")
 )
 
+// Initialize middlewares
 func Initialize(app fiber.App) {
 	app.Use(jwtware.New(jwtware.Config{
 		SigningKey: []byte(JWT_SECRET),

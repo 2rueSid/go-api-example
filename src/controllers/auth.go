@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/2rueSid/go-api-example/src/config"
+	tokenModel "github.com/2rueSid/go-api-example/src/models/token"
 	"github.com/2rueSid/go-api-example/src/models/user"
 	"github.com/2rueSid/go-api-example/src/types"
 	"github.com/golang-jwt/jwt"
@@ -36,7 +37,7 @@ func SignUp(ctx *fiber.Ctx) error {
 // Controller that responsible for sign in user
 func SignIn(ctx *fiber.Ctx) error {
 	body := new(types.UserInput)
-	c := make(chan *types.UserOutput)
+	c, tokenC := make(chan *types.UserOutput), make(chan *types.TokenOutput)
 
 	if err := ctx.BodyParser(body); err != nil {
 		return fiber.ErrBadRequest
@@ -63,6 +64,15 @@ func SignIn(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		return fiber.NewError(500, "server error")
+	}
+
+	go tokenModel.Create(
+		&types.Token{UserId: user.ID, Token: signed, Expiration: expiration},
+		tokenC,
+	)
+
+	if tokenResult := <-tokenC; tokenResult.Err != nil {
+		return fiber.NewError(tokenResult.ErrStatus, tokenResult.Err.Error())
 	}
 
 	authorizedUser := &types.AuthorizedUser{User: user, Token: signed}

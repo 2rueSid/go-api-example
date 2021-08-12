@@ -11,10 +11,12 @@ import (
 )
 
 const (
+	// Default cost, that used to hash password within the bcrypt library
 	DEFAULT_COST = 10
 )
 
 var (
+	// Get database connection instance
 	client = database.Connect()
 )
 
@@ -56,7 +58,10 @@ func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
 
 // Function that accepts user data, and return user if it's exists or return an error
 func SignIn(data *types.UserInput, chanel chan<- *types.UserOutput) {
-	user, err := client.User.FindUnique(db.User.EmailUsername(db.User.Email.Equals(data.Email), db.User.Username.Equals(data.Username))).Exec(database.Context)
+	user, err := client.User.FindUnique(
+		db.User.EmailUsername(db.User.Email.Equals(data.Email),
+			db.User.Username.Equals(data.Username)),
+	).Exec(database.Context)
 
 	if err != nil {
 		result := &types.UserOutput{

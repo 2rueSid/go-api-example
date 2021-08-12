@@ -18,6 +18,8 @@ type UserOutput struct {
 	ErrStatus int
 }
 
+// Output that has user instance and generated JWT token,
+// that passed to the frontend to implement JWT session
 type AuthorizedUser struct {
 	User  *db.UserModel `json:"user"`
 	Token string        `json:"token"`
