@@ -18,6 +18,7 @@ model User {
 
   UserTokens UserTokens[]
 
+  File File[]
   @@unique([email, username])
   @@map("users")
 }
@@ -31,4 +32,20 @@ model UserTokens {
   User User @relation(fields: [user_id], references: [id])
 
   @@map("user_tokens")
+}
+
+model File {
+  id           Int      @id @default(autoincrement())
+  name         String
+  originalname String
+  size         Int
+  extension    String
+  download     String?
+  user_id      Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+
+  User User @relation(fields: [user_id], references: [id])
+
+  @@map("uploaded_files")
 }

@@ -77,12 +77,16 @@ func SignIn(ctx *fiber.Ctx) error {
 func generateSignInToken(user *db.UserModel) (*types.AuthorizedUser, error) {
 	tokenC := make(chan *types.TokenOutput)
 
-	token := jwt.New(jwt.SigningMethodHS256)
 	expiration := time.Now().Add(time.Hour * 72).Unix()
 
-	claims := token.Claims.(jwt.MapClaims)
-	claims["user"] = user
-	claims["exp"] = expiration
+	claims := &types.JwtUserClaims{
+		types.CurrentUser{Name: user.Username, Email: user.Email, Id: user.ID},
+		jwt.StandardClaims{
+			ExpiresAt: expiration,
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	signed, err := token.SignedString([]byte(config.JWT_SECRET))
 

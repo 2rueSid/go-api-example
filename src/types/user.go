@@ -1,7 +1,10 @@
 // package to implement types
 package types
 
-import "github.com/2rueSid/go-api-example/prisma/db"
+import (
+	"github.com/2rueSid/go-api-example/prisma/db"
+	"github.com/golang-jwt/jwt"
+)
 
 // DTO that describes which data
 // should pass while createing new user
@@ -22,4 +25,17 @@ type UserOutput struct {
 // that passed to the frontend to implement JWT session
 type AuthorizedUser struct {
 	Token string `json:"token"`
+}
+
+// Current user payload that used within the application context
+type CurrentUser struct {
+	Name  string `json:"username"`
+	Email string `json:"email"`
+	Id    int    `json:"id"`
+}
+
+// JWT claims type
+type JwtUserClaims struct {
+	CurrentUser
+	jwt.StandardClaims
 }

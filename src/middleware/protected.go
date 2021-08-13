@@ -1,3 +1,4 @@
+// Package in which middlewares are initialized
 package middleware
 
 import (
