@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
+    volumes:
+      - go_example:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+    expose:
+      - '5433'
+    env_file:
+      - ./.postgres.env
+
+  api:
+    container_name: app
+    depends_on:
+      - 'postgres'
+    build:
+      dockerfile: Dockerfile
+      context: .
+    links:
+      - postgres
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./.env
+    stdin_open: true
+    tty: true
+
+volumes:
+  go_example:
