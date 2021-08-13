@@ -3,7 +3,7 @@ package controllers
 
 import (
 	"bytes"
-	"os"
+	"fmt"
 	"path/filepath"
 	"time"
 
@@ -22,8 +22,6 @@ const (
 // Function that save uploaded locally
 // And return slice of saved files
 func UploadFiles(ctx *fiber.Ctx) error {
-	currentDir, _ := os.Getwd()
-	uploadPath := currentDir + "/uploads"
 	form, err := ctx.MultipartForm()
 
 	userId := int(ctx.Locals("CurrentUser").(float64))
@@ -59,7 +57,7 @@ func UploadFiles(ctx *fiber.Ctx) error {
 
 		uploadedFiles = append(uploadedFiles, *savedFile.File)
 
-		ctx.SaveFile(file, uploadPath)
+		ctx.SaveFile(file, fmt.Sprintf("./uploads/%s", name+extension))
 	}
 
 	return ctx.JSON(uploadedFiles)
