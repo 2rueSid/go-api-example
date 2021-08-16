@@ -152,6 +152,10 @@ go-build: $(BUILD_DIRS)
 	        ./build/build.sh                                    \
 	    "
 
+lint: 
+	@echo "start linting..."
+	@./build/lint.sh
+
 # Example: make shell CMD="-c 'date > datefile'"
 shell: # @HELP launches a shell in the containerized build environment
 shell: $(BUILD_DIRS)

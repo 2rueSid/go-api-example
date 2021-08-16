@@ -1,0 +1,10 @@
+hooks:
+  # hook scripts
+  pre-commit:
+    - make build
+    - husky lint-staged
+  
+# list staged files do some pre-process and git add
+lint-staged:
+  "*.go":
+    - gofmt -l -w
