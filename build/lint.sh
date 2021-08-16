@@ -11,3 +11,4 @@ then
 fi
 
 golangci-lint run
+
