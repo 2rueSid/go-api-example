@@ -27,14 +27,13 @@ func Create(f *types.FileInput, c chan<- *types.FileOutput) {
 	).Exec(database.Context)
 
 	if err != nil {
-		r := &types.FileOutput{
-			created,
-			types.ErrOutput{Err: errors.New("file not created"), Status: 500},
+		c <- &types.FileOutput{
+			File:      created,
+			ErrOutput: types.ErrOutput{Err: errors.New("file not created"), Status: 500},
 		}
 
-		c <- r
 		return
 	}
 
-	c <- &types.FileOutput{created, types.ErrOutput{Err: nil, Status: 0}}
+	c <- &types.FileOutput{File: created, ErrOutput: types.ErrOutput{Err: nil, Status: 0}}
 }

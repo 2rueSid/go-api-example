@@ -80,8 +80,8 @@ func generateAuthToken(u *db.UserModel) (*types.AuthorizedUser, error) {
 	e := time.Now().Add(time.Hour * 72).Unix()
 
 	claims := &types.JwtUserClaims{
-		types.CurrentUser{Name: u.Username, Email: u.Email, Id: u.ID},
-		jwt.StandardClaims{
+		CurrentUser: types.CurrentUser{Name: u.Username, Email: u.Email, Id: u.ID},
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: e,
 		},
 	}

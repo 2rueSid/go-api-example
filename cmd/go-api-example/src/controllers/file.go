@@ -57,7 +57,11 @@ func UploadFiles(c *fiber.Ctx) error {
 
 		uploaded = append(uploaded, *saved.File)
 
-		c.SaveFile(file, fmt.Sprintf("./uploads/%s", n+e))
+		err := c.SaveFile(file, fmt.Sprintf("./uploads/%s", n+e))
+
+		if err != nil {
+			return fiber.NewError(saved.Status, saved.Err.Error())
+		}
 	}
 
 	return c.JSON(uploaded)
