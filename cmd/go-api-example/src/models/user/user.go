@@ -4,9 +4,9 @@ package user
 import (
 	"errors"
 
-	"github.com/2rueSid/go-api-example/prisma/db"
-	"github.com/2rueSid/go-api-example/src/config/database"
-	"github.com/2rueSid/go-api-example/src/types"
+	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/config/database"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/types"
 	"github.com/gofiber/utils"
 	"golang.org/x/crypto/bcrypt"
 )

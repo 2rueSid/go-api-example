@@ -2,7 +2,7 @@
 package routes
 
 import (
-	"github.com/2rueSid/go-api-example/src/controllers"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/controllers"
 	"github.com/gofiber/fiber/v2"
 )
 

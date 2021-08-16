@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/2rueSid/go-api-example/prisma/db"
+	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
 )
 
 // Fields that need to save file into the db

@@ -22,6 +22,10 @@ func CurrentUser(ctx *fiber.Ctx) error {
 
 	id := user["id"]
 
+	if id == nil {
+		return errors.New("not valid")
+	}
+
 	ctx.Locals("CurrentUser", id)
 
 	return ctx.Next()

@@ -5,11 +5,11 @@ import (
 	"errors"
 	"time"
 
-	"github.com/2rueSid/go-api-example/prisma/db"
-	"github.com/2rueSid/go-api-example/src/config"
-	tokenModel "github.com/2rueSid/go-api-example/src/models/token"
-	"github.com/2rueSid/go-api-example/src/models/user"
-	"github.com/2rueSid/go-api-example/src/types"
+	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/config"
+	tokenModel "github.com/2rueSid/go-api/cmd/go-api-example/src/models/token"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/models/user"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/types"
 	"github.com/golang-jwt/jwt"
 
 	"github.com/gofiber/fiber/v2"

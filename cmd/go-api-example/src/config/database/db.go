@@ -5,7 +5,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/2rueSid/go-api-example/prisma/db"
+	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
 )
 
 // Variables which used in database queries

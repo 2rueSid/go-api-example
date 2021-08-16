@@ -1,3 +1,5 @@
-.env
-uploads
-*.env
+/bin
+/.go
+/.container-*
+/.dockerfile-*
+/.licenses

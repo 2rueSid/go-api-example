@@ -2,7 +2,7 @@
 package middleware
 
 import (
-	"github.com/2rueSid/go-api-example/src/config"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/config"
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"
 )

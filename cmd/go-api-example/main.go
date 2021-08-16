@@ -5,9 +5,9 @@ package main
 import (
 	"log"
 
-	"github.com/2rueSid/go-api-example/src/config"
-	"github.com/2rueSid/go-api-example/src/config/database"
-	"github.com/2rueSid/go-api-example/src/routes"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/config"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/config/database"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/routes"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -2,7 +2,7 @@
 package types
 
 import (
-	"github.com/2rueSid/go-api-example/prisma/db"
+	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
 	"github.com/golang-jwt/jwt"
 )
 

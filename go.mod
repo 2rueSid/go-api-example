@@ -1,4 +1,4 @@
-module github.com/2rueSid/go-api-example
+module github.com/2rueSid/go-api
 
 go 1.16
 

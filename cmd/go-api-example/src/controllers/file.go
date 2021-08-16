@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/2rueSid/go-api-example/prisma/db"
-	fileModel "github.com/2rueSid/go-api-example/src/models/file"
-	"github.com/2rueSid/go-api-example/src/types"
+	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
+	fileModel "github.com/2rueSid/go-api/cmd/go-api-example/src/models/file"
+	"github.com/2rueSid/go-api/cmd/go-api-example/src/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/utils"
 )
