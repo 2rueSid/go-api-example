@@ -1,4 +1,4 @@
-// database contains defined database connection instance and helper function.
+// Database contains defined database connection instance and helper function.
 package database
 
 import (

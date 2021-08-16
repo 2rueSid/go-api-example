@@ -1,4 +1,4 @@
-// middleware contains defined middlewares.
+// Middleware contains defined middlewares.
 package middleware
 
 import (

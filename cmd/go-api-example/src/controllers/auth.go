@@ -1,4 +1,4 @@
-// controllers contained defined controllers.
+// Controllers contained defined controllers.
 package controllers
 
 import (
@@ -18,90 +18,90 @@ import (
 
 // SignUp responsible for creating user.
 func SignUp(ctx *fiber.Ctx) error {
-	body := new(types.UserInput)
+	b := new(types.UserInput)
 	c := make(chan *types.UserOutput)
 
-	if err := ctx.BodyParser(body); err != nil {
+	if err := ctx.BodyParser(b); err != nil {
 		return fiber.ErrBadRequest
 	}
 
-	go user.Create(body, c)
+	go user.Create(b, c)
 
-	result := <-c
+	r := <-c
 
-	err, status, user := result.Err, result.ErrStatus, result.User
+	err, s, u := r.Err, r.ErrStatus, r.User
 
 	if err != nil {
-		return fiber.NewError(status, err.Error())
+		return fiber.NewError(s, err.Error())
 	}
 
-	authorizedUser, err := generateSignInToken(user)
+	authorized, err := generateAuthToken(u)
 
 	if err != nil {
 		return fiber.NewError(500, err.Error())
 	}
 
-	return ctx.JSON(authorizedUser)
+	return ctx.JSON(authorized)
 }
 
 // SignIn responsible for sign in user.
 func SignIn(ctx *fiber.Ctx) error {
-	body := new(types.UserInput)
+	b := new(types.UserInput)
 	c := make(chan *types.UserOutput)
 
-	if err := ctx.BodyParser(body); err != nil {
+	if err := ctx.BodyParser(b); err != nil {
 		return fiber.ErrBadRequest
 	}
 
-	go user.SignIn(body, c)
+	go user.SignIn(b, c)
 
-	result := <-c
+	r := <-c
 
-	err, status, user := result.Err, result.ErrStatus, result.User
+	err, s, u := r.Err, r.ErrStatus, r.User
 
 	if err != nil {
-		return fiber.NewError(status, err.Error())
+		return fiber.NewError(s, err.Error())
 	}
 
-	authorizedUser, err := generateSignInToken(user)
+	authorized, err := generateAuthToken(u)
 
 	if err != nil {
 		return fiber.NewError(500, err.Error())
 	}
 
-	return ctx.JSON(authorizedUser)
+	return ctx.JSON(authorized)
 }
 
 // Generates and save JWT token to the database.
 // Also, return generated token, which is send to the frontend.
-func generateSignInToken(user *db.UserModel) (*types.AuthorizedUser, error) {
-	tokenC := make(chan *types.TokenOutput)
+func generateAuthToken(u *db.UserModel) (*types.AuthorizedUser, error) {
+	c := make(chan *types.TokenOutput)
 
-	expiration := time.Now().Add(time.Hour * 72).Unix()
+	e := time.Now().Add(time.Hour * 72).Unix()
 
 	claims := &types.JwtUserClaims{
-		types.CurrentUser{Name: user.Username, Email: user.Email, Id: user.ID},
+		types.CurrentUser{Name: u.Username, Email: u.Email, Id: u.ID},
 		jwt.StandardClaims{
-			ExpiresAt: expiration,
+			ExpiresAt: e,
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signed, err := token.SignedString([]byte(config.JWT_SECRET))
+	s, err := t.SignedString([]byte(config.JWT_SECRET))
 
 	if err != nil {
 		return nil, errors.New(utils.StatusMessage(500))
 	}
 
 	go tokenModel.Create(
-		&types.Token{UserId: user.ID, Token: signed, Expiration: expiration},
-		tokenC,
+		&types.Token{UserId: u.ID, Token: s, Expiration: e},
+		c,
 	)
 
-	if tokenResult := <-tokenC; tokenResult.Err != nil {
+	if r := <-c; r.Err != nil {
 		return nil, errors.New(utils.StatusMessage(500))
 	}
 
-	return &types.AuthorizedUser{Token: signed}, nil
+	return &types.AuthorizedUser{Token: s}, nil
 }

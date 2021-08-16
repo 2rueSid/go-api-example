@@ -1,4 +1,4 @@
-// file is used to define methods that are applied to file table.
+// File is used to define methods that are applied to file table.
 package file
 
 import (
@@ -15,26 +15,26 @@ var (
 )
 
 // Add file to the database.
-func Create(file *types.FileInput, chanel chan<- *types.FileOutput) {
-	download := "/uploads/" + file.Name
-	createdFile, err := client.File.CreateOne(
-		db.File.Name.Set(file.Name),
-		db.File.Originalname.Set(file.Originalname),
-		db.File.Size.Set(file.Size),
-		db.File.Extension.Set(file.Extension),
-		db.File.User.Link(db.User.ID.Equals(file.UserId)),
-		db.File.Download.Set(download),
+func Create(f *types.FileInput, c chan<- *types.FileOutput) {
+	d := "/uploads/" + f.Name
+	created, err := client.File.CreateOne(
+		db.File.Name.Set(f.Name),
+		db.File.Originalname.Set(f.Originalname),
+		db.File.Size.Set(f.Size),
+		db.File.Extension.Set(f.Extension),
+		db.File.User.Link(db.User.ID.Equals(f.UserId)),
+		db.File.Download.Set(d),
 	).Exec(database.Context)
 
 	if err != nil {
-		result := &types.FileOutput{
-			createdFile,
+		r := &types.FileOutput{
+			created,
 			types.ErrorOutput{Err: errors.New("file not created"), Status: 500},
 		}
 
-		chanel <- result
+		c <- r
 		return
 	}
 
-	chanel <- &types.FileOutput{createdFile, types.ErrorOutput{Err: nil, Status: 0}}
+	c <- &types.FileOutput{created, types.ErrorOutput{Err: nil, Status: 0}}
 }

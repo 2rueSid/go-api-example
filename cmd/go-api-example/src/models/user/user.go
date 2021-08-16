@@ -1,4 +1,4 @@
-// user is used to define methods that are applied to user table.
+// User is used to define methods that are applied to user table.
 package user
 
 import (
@@ -22,85 +22,85 @@ var (
 )
 
 // Create creates user, and save it to the users table.
-func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
-	password, err := hashPassword(user.Password)
+func Create(u *types.UserInput, c chan<- *types.UserOutput) {
+	p, err := hashPassword(u.Password)
 
 	if err != nil {
-		result := &types.UserOutput{
+		r := &types.UserOutput{
 			User:      nil,
 			ErrStatus: 500,
 			Err:       errors.New(utils.StatusMessage(500)),
 		}
 
-		chanel <- result
+		c <- r
 		return
 	}
 
-	createdUser, err := client.User.CreateOne(
-		db.User.Email.Set(user.Email),
-		db.User.Username.Set(user.Username),
-		db.User.Password.Set(password)).Exec(database.Context)
+	created, err := client.User.CreateOne(
+		db.User.Email.Set(u.Email),
+		db.User.Username.Set(u.Username),
+		db.User.Password.Set(p)).Exec(database.Context)
 
 	if err != nil {
-		result := &types.UserOutput{
+		r := &types.UserOutput{
 			User:      nil,
 			ErrStatus: 403,
 			Err:       errors.New(utils.StatusMessage(403)),
 		}
 
-		chanel <- result
+		c <- r
 		return
 	}
 
-	result := &types.UserOutput{User: createdUser, Err: nil, ErrStatus: 0}
+	r := &types.UserOutput{User: created, Err: nil, ErrStatus: 0}
 
-	chanel <- result
+	c <- r
 }
 
 // SignIn accepts user data, and return user if it's exists or return an error.
-func SignIn(data *types.UserInput, chanel chan<- *types.UserOutput) {
-	user, err := client.User.FindUnique(
-		db.User.EmailUsername(db.User.Email.Equals(data.Email),
-			db.User.Username.Equals(data.Username)),
+func SignIn(d *types.UserInput, c chan<- *types.UserOutput) {
+	u, err := client.User.FindUnique(
+		db.User.EmailUsername(db.User.Email.Equals(d.Email),
+			db.User.Username.Equals(d.Username)),
 	).Exec(database.Context)
 
 	if err != nil {
-		result := &types.UserOutput{
+		r := &types.UserOutput{
 			User:      nil,
 			ErrStatus: 404,
 			Err:       errors.New(utils.StatusMessage(404)),
 		}
 
-		chanel <- result
+		c <- r
 	}
 
-	if err := comparePasswords(user.Password, data.Password); err != nil {
-		result := &types.UserOutput{
+	if err := comparePasswords(u.Password, d.Password); err != nil {
+		r := &types.UserOutput{
 			User:      nil,
 			ErrStatus: 401,
 			Err:       errors.New(utils.StatusMessage(401)),
 		}
 
-		chanel <- result
+		c <- r
 	}
 
-	chanel <- &types.UserOutput{User: user, Err: nil}
+	c <- &types.UserOutput{User: u, Err: nil}
 }
 
 // Hash given password, and return a hash.
-func hashPassword(password string) (string, error) {
-	value, err := bcrypt.GenerateFromPassword([]byte(password), DEFAULT_COST)
+func hashPassword(p string) (string, error) {
+	v, err := bcrypt.GenerateFromPassword([]byte(p), DEFAULT_COST)
 
 	if err != nil {
 		return "", errors.New("err")
 	}
 
-	return string(value), nil
+	return string(v), nil
 }
 
 // Compare passwords, and return error if they are not the same.
-func comparePasswords(hashed string, password string) error {
-	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)); err != nil {
+func comparePasswords(h string, p string) error {
+	if err := bcrypt.CompareHashAndPassword([]byte(h), []byte(p)); err != nil {
 		return errors.New("err")
 	}
 

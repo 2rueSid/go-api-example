@@ -1,4 +1,4 @@
-// token is used to define methods that are applied to user token.
+// Token is used to define methods that are applied to user token.
 package token
 
 import (
@@ -16,19 +16,19 @@ var (
 )
 
 // Save token into userTokens table.
-func Create(token *types.Token, chanel chan<- *types.TokenOutput) {
-	createdToken, err := client.UserTokens.CreateOne(
-		db.UserTokens.Lifetime.Set(time.Unix(token.Expiration, 0)),
-		db.UserTokens.Token.Set(token.Token),
-		db.UserTokens.User.Link(db.User.ID.Equals(token.UserId)),
+func Create(t *types.Token, c chan<- *types.TokenOutput) {
+	created, err := client.UserTokens.CreateOne(
+		db.UserTokens.Lifetime.Set(time.Unix(t.Expiration, 0)),
+		db.UserTokens.Token.Set(t.Token),
+		db.UserTokens.User.Link(db.User.ID.Equals(t.UserId)),
 	).Exec(database.Context)
 
 	if err != nil {
-		result := &types.TokenOutput{Err: errors.New("token not created"), ErrStatus: 500, Token: nil}
+		r := &types.TokenOutput{Err: errors.New("token not created"), ErrStatus: 500, Token: nil}
 
-		chanel <- result
+		c <- r
 		return
 	}
 
-	chanel <- &types.TokenOutput{Err: nil, ErrStatus: 0, Token: createdToken}
+	c <- &types.TokenOutput{Err: nil, ErrStatus: 0, Token: created}
 }

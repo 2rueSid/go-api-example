@@ -1,4 +1,4 @@
-// routes contains defined routes.
+// Routes contains defined routes.
 package routes
 
 import (
@@ -8,8 +8,8 @@ import (
 )
 
 // UploadRoutes uses to define routes that are applied to upload functionality.
-func UploadRoutes(app *fiber.App) {
-	route := app.Group("/upload")
+func UploadRoutes(a *fiber.App) {
+	r := a.Group("/upload")
 
-	route.Post("/files", middleware.Protected(), middleware.CurrentUser, controllers.UploadFiles)
+	r.Post("/files", middleware.Protected(), middleware.CurrentUser, controllers.UploadFiles)
 }

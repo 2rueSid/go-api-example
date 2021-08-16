@@ -13,17 +13,17 @@ import (
 
 func main() {
 	// Get fiber application instance.
-	app := fiber.New()
+	a := fiber.New()
 
 	// Initialize middlewares.
-	config.Initialize(*app)
+	config.Initialize(*a)
 
 	// Initialize routes.
-	routes.Initialize(app)
+	routes.Initialize(a)
 
 	// Run application on given PORT.
 	// Default PORT equals to 3000.
-	log.Fatal(app.Listen(config.PORT))
+	log.Fatal(a.Listen(config.PORT))
 
 	// Close database connection.
 	defer database.Disconnect()

@@ -1,4 +1,4 @@
-// routes contains defined routes.
+// Routes contains defined routes.
 package routes
 
 import (
@@ -8,9 +8,9 @@ import (
 
 // AuthRoutes is used to define routes,
 // which are applies to the authorization functionality.
-func AuthRoutes(app *fiber.App) {
-	route := app.Group("/auth")
+func AuthRoutes(a *fiber.App) {
+	r := a.Group("/auth")
 
-	route.Post("/signup", controllers.SignUp)
-	route.Post("/signin", controllers.SignIn)
+	r.Post("/signup", controllers.SignUp)
+	r.Post("/signin", controllers.SignIn)
 }

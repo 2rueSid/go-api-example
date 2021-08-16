@@ -1,4 +1,4 @@
-// types contains implemented types.
+// Types contains implemented types.
 package types
 
 import (
