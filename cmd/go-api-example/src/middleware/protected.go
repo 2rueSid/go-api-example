@@ -1,4 +1,4 @@
-// Package in which middlewares are initialized
+// middleware contains defined middlewares.
 package middleware
 
 import (
@@ -7,7 +7,7 @@ import (
 	jwtware "github.com/gofiber/jwt/v2"
 )
 
-// Protected protect routes
+// Protected protect routes.
 func Protected() fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey:   []byte(config.JWT_SECRET),
@@ -15,7 +15,7 @@ func Protected() fiber.Handler {
 	})
 }
 
-// Error handler
+// Error handler.
 func jwtError(c *fiber.Ctx, err error) error {
 	if err.Error() == "Missing or malformed JWT" {
 		return c.Status(fiber.StatusBadRequest).

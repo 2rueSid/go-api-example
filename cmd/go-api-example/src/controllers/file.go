@@ -1,4 +1,4 @@
-// Package in which controllers are initialized
+// controllers contained defined controllers.
 package controllers
 
 import (
@@ -15,12 +15,12 @@ import (
 )
 
 const (
-	// Key that equals to key in multipart form data request field
+	// Key that equals to key in multipart form data request field.
 	UPLOAD_FILES_KEY = "files"
 )
 
-// Function that save uploaded locally
-// And return slice of saved files
+// UploadFiles save uploaded locally,
+// and return slice of saved files.
 func UploadFiles(ctx *fiber.Ctx) error {
 	form, err := ctx.MultipartForm()
 
@@ -46,7 +46,7 @@ func UploadFiles(ctx *fiber.Ctx) error {
 			UserId:       userId,
 		}
 
-		// Saved file into db
+		// Saved file into db.
 		go fileModel.Create(fileInput, fileChanel)
 
 		savedFile := <-fileChanel
@@ -63,6 +63,7 @@ func UploadFiles(ctx *fiber.Ctx) error {
 	return ctx.JSON(uploadedFiles)
 }
 
+// generateName generate name of given file, and return generated name.
 func generateName(originalname string) string {
 	var name bytes.Buffer
 
@@ -73,6 +74,7 @@ func generateName(originalname string) string {
 	return name.String()
 }
 
+// getExtension is used to get extension of given file.
 func getExtension(filename string) string {
 	extension := filepath.Ext(filename)
 

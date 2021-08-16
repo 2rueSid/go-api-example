@@ -1,4 +1,4 @@
-// package in which defined routes
+// routes contains defined routes.
 package routes
 
 import (
@@ -6,7 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// Function to define routes which applies to authorization functionality
+// AuthRoutes is used to define routes,
+// which are applies to the authorization functionality.
 func AuthRoutes(app *fiber.App) {
 	route := app.Group("/auth")
 

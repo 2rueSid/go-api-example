@@ -1,4 +1,4 @@
-// Package in which controllers are initialized
+// controllers contained defined controllers.
 package controllers
 
 import (
@@ -16,7 +16,7 @@ import (
 	"github.com/gofiber/utils"
 )
 
-// Controller that responsible for creating user
+// SignUp responsible for creating user.
 func SignUp(ctx *fiber.Ctx) error {
 	body := new(types.UserInput)
 	c := make(chan *types.UserOutput)
@@ -44,7 +44,7 @@ func SignUp(ctx *fiber.Ctx) error {
 	return ctx.JSON(authorizedUser)
 }
 
-// Controller that responsible for sign in user
+// SignIn responsible for sign in user.
 func SignIn(ctx *fiber.Ctx) error {
 	body := new(types.UserInput)
 	c := make(chan *types.UserOutput)
@@ -72,8 +72,8 @@ func SignIn(ctx *fiber.Ctx) error {
 	return ctx.JSON(authorizedUser)
 }
 
-// Generates and save JWT token to the database
-// Also, return generated token, which is send to the frontend
+// Generates and save JWT token to the database.
+// Also, return generated token, which is send to the frontend.
 func generateSignInToken(user *db.UserModel) (*types.AuthorizedUser, error) {
 	tokenC := make(chan *types.TokenOutput)
 

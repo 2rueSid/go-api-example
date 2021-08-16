@@ -1,4 +1,4 @@
-// Package in which middlewares are initialized
+// middleware contains defined middlewares.
 package middleware
 
 import (
@@ -8,9 +8,9 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-// Middleware that used in protected routes
-// If there is a JWT token and it's valid
-// Add CurrentUser struct instance into the application context
+// CurrentUser used in protected routes.
+// If there is a JWT token and it's valid,
+// add CurrentUser struct instance into the application context.
 func CurrentUser(ctx *fiber.Ctx) error {
 	token := ctx.Locals("user")
 

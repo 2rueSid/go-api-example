@@ -1,5 +1,4 @@
-// Package main implements web server.
-// Here is the server starts
+// Main implements web server.
 package main
 
 import (
@@ -13,19 +12,19 @@ import (
 )
 
 func main() {
-	// Get fiber application instance
+	// Get fiber application instance.
 	app := fiber.New()
 
-	// Initialize middlewares
+	// Initialize middlewares.
 	config.Initialize(*app)
 
-	// Initialize routes
+	// Initialize routes.
 	routes.Initialize(app)
 
-	// Run application on given PORT
-	// Default PORT equals to 3000
+	// Run application on given PORT.
+	// Default PORT equals to 3000.
 	log.Fatal(app.Listen(config.PORT))
 
-	// Close database connection
+	// Close database connection.
 	defer database.Disconnect()
 }

@@ -1,3 +1,4 @@
+// token is used to define methods that are applied to user token.
 package token
 
 import (
@@ -10,11 +11,11 @@ import (
 )
 
 var (
-	// Get database connection instance
+	// Get database connection instance.
 	client = database.Connect()
 )
 
-// Save token into userTokens table
+// Save token into userTokens table.
 func Create(token *types.Token, chanel chan<- *types.TokenOutput) {
 	createdToken, err := client.UserTokens.CreateOne(
 		db.UserTokens.Lifetime.Set(time.Unix(token.Expiration, 0)),

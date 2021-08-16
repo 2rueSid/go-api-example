@@ -1,4 +1,4 @@
-// package in which defined routes
+// routes contains defined routes.
 package routes
 
 import (
@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// Function to define routes which applies to upload functionality
+// UploadRoutes uses to define routes that are applied to upload functionality.
 func UploadRoutes(app *fiber.App) {
 	route := app.Group("/upload")
 

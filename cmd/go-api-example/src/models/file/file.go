@@ -1,3 +1,4 @@
+// file is used to define methods that are applied to file table.
 package file
 
 import (
@@ -9,11 +10,11 @@ import (
 )
 
 var (
-	// Get database connection instance
+	// Get database connection instance.
 	client = database.Client
 )
 
-// Add file to the database
+// Add file to the database.
 func Create(file *types.FileInput, chanel chan<- *types.FileOutput) {
 	download := "/uploads/" + file.Name
 	createdFile, err := client.File.CreateOne(

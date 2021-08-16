@@ -1,4 +1,4 @@
-// Package in which database queries are initialized
+// user is used to define methods that are applied to user table.
 package user
 
 import (
@@ -12,16 +12,16 @@ import (
 )
 
 const (
-	// Default cost, that used to hash password within the bcrypt library
+	// Default cost, that used to hash password within the bcrypt library.
 	DEFAULT_COST = 10
 )
 
 var (
-	// Get database connection instance
+	// Get database connection instance.
 	client = database.Connect()
 )
 
-// Function that creates user, and save it to the users table
+// Create creates user, and save it to the users table.
 func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
 	password, err := hashPassword(user.Password)
 
@@ -57,7 +57,7 @@ func Create(user *types.UserInput, chanel chan<- *types.UserOutput) {
 	chanel <- result
 }
 
-// Function that accepts user data, and return user if it's exists or return an error
+// SignIn accepts user data, and return user if it's exists or return an error.
 func SignIn(data *types.UserInput, chanel chan<- *types.UserOutput) {
 	user, err := client.User.FindUnique(
 		db.User.EmailUsername(db.User.Email.Equals(data.Email),
@@ -87,7 +87,7 @@ func SignIn(data *types.UserInput, chanel chan<- *types.UserOutput) {
 	chanel <- &types.UserOutput{User: user, Err: nil}
 }
 
-// Hash given password, and return a hash
+// Hash given password, and return a hash.
 func hashPassword(password string) (string, error) {
 	value, err := bcrypt.GenerateFromPassword([]byte(password), DEFAULT_COST)
 
@@ -98,7 +98,7 @@ func hashPassword(password string) (string, error) {
 	return string(value), nil
 }
 
-// Compare passwords, and return error if they are not the same
+// Compare passwords, and return error if they are not the same.
 func comparePasswords(hashed string, password string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)); err != nil {
 		return errors.New("err")

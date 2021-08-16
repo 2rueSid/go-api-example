@@ -1,10 +1,11 @@
+// types contains implemented types.
 package types
 
 import (
 	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
 )
 
-// Fields that need to save file into the db
+// FileInput has fields that need to save files into the DB.
 type FileInput struct {
 	Name         string `json:"name"`
 	Originalname string `json:"originalname"`
@@ -13,13 +14,13 @@ type FileInput struct {
 	UserId       int    `json:"user_id"`
 }
 
-// Default error output, used basically in models of application
+// ErrorOutput default error output, used basically in models of application.
 type ErrorOutput struct {
 	Err    error
 	Status int
 }
 
-// File output, default return value form file model methods
+// FileOutput, default return value form file model methods.
 type FileOutput struct {
 	File *db.FileModel
 	ErrorOutput
