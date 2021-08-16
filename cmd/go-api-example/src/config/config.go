@@ -20,7 +20,7 @@ var (
 )
 
 // Initialize initialize middlewares.
-func Initialize(a fiber.App) {
+func Initialize(a *fiber.App) {
 	a.Use(logger.New())
 }
 

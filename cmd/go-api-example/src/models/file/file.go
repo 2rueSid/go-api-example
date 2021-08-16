@@ -29,12 +29,12 @@ func Create(f *types.FileInput, c chan<- *types.FileOutput) {
 	if err != nil {
 		r := &types.FileOutput{
 			created,
-			types.ErrorOutput{Err: errors.New("file not created"), Status: 500},
+			types.ErrOutput{Err: errors.New("file not created"), Status: 500},
 		}
 
 		c <- r
 		return
 	}
 
-	c <- &types.FileOutput{created, types.ErrorOutput{Err: nil, Status: 0}}
+	c <- &types.FileOutput{created, types.ErrOutput{Err: nil, Status: 0}}
 }

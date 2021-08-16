@@ -11,22 +11,22 @@ import (
 // CurrentUser used in protected routes.
 // If there is a JWT token and it's valid,
 // add CurrentUser struct instance into the application context.
-func CurrentUser(ctx *fiber.Ctx) error {
-	token := ctx.Locals("user")
+func CurrentUser(c *fiber.Ctx) error {
+	t := c.Locals("user")
 
-	user := token.(*jwt.Token).Claims.(jwt.MapClaims)
+	u := t.(*jwt.Token).Claims.(jwt.MapClaims)
 
-	if err := user.Valid(); err != nil {
+	if err := u.Valid(); err != nil {
 		return errors.New("not valid")
 	}
 
-	id := user["id"]
+	id := u["id"]
 
 	if id == nil {
 		return errors.New("not valid")
 	}
 
-	ctx.Locals("CurrentUser", id)
+	c.Locals("CurrentUser", id)
 
-	return ctx.Next()
+	return c.Next()
 }

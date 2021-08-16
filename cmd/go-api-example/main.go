@@ -16,7 +16,7 @@ func main() {
 	a := fiber.New()
 
 	// Initialize middlewares.
-	config.Initialize(*a)
+	config.Initialize(a)
 
 	// Initialize routes.
 	routes.Initialize(a)

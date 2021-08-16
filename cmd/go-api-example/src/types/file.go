@@ -14,8 +14,8 @@ type FileInput struct {
 	UserId       int    `json:"user_id"`
 }
 
-// ErrorOutput default error output, used basically in models of application.
-type ErrorOutput struct {
+// ErrOutput default error output, used basically in models of application.
+type ErrOutput struct {
 	Err    error
 	Status int
 }
@@ -23,5 +23,5 @@ type ErrorOutput struct {
 // FileOutput, default return value form file model methods.
 type FileOutput struct {
 	File *db.FileModel
-	ErrorOutput
+	ErrOutput
 }

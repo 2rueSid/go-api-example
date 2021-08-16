@@ -88,7 +88,7 @@ func SignIn(d *types.UserInput, c chan<- *types.UserOutput) {
 }
 
 // Hash given password, and return a hash.
-func hashPassword(p string) (string, error) {
+func hashPassword(p string) (password string, err error) {
 	v, err := bcrypt.GenerateFromPassword([]byte(p), DEFAULT_COST)
 
 	if err != nil {
@@ -99,8 +99,8 @@ func hashPassword(p string) (string, error) {
 }
 
 // Compare passwords, and return error if they are not the same.
-func comparePasswords(h string, p string) error {
-	if err := bcrypt.CompareHashAndPassword([]byte(h), []byte(p)); err != nil {
+func comparePasswords(hash, password string) error {
+	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
 		return errors.New("err")
 	}
 
