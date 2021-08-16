@@ -5,7 +5,6 @@ go 1.16
 require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-courier/husky v1.7.0 // indirect
 	github.com/gofiber/fiber/v2 v2.17.0
 	github.com/gofiber/jwt/v2 v2.2.5
 	github.com/gofiber/utils v0.0.10
