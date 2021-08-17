@@ -26,14 +26,7 @@ func Create(u *types.UserInput, c chan<- *types.UserOutput) {
 	p, err := hashPassword(u.Password)
 
 	if err != nil {
-		r := &types.UserOutput{
-			User:      nil,
-			ErrStatus: 500,
-			Err:       errors.New(utils.StatusMessage(500)),
-		}
-
-		c <- r
-		return
+		c <- output(nil, 500, errors.New(utils.StatusMessage(500)))
 	}
 
 	created, err := client.User.CreateOne(
@@ -42,19 +35,10 @@ func Create(u *types.UserInput, c chan<- *types.UserOutput) {
 		db.User.Password.Set(p)).Exec(database.Context)
 
 	if err != nil {
-		r := &types.UserOutput{
-			User:      nil,
-			ErrStatus: 403,
-			Err:       errors.New(utils.StatusMessage(403)),
-		}
-
-		c <- r
-		return
+		c <- output(nil, 403, errors.New(utils.StatusMessage(403)))
 	}
 
-	r := &types.UserOutput{User: created, Err: nil, ErrStatus: 0}
-
-	c <- r
+	c <- output(created, 0, nil)
 }
 
 // SignIn accepts user data, and return user if it's exists or return an error.
@@ -65,26 +49,19 @@ func SignIn(d *types.UserInput, c chan<- *types.UserOutput) {
 	).Exec(database.Context)
 
 	if err != nil {
-		r := &types.UserOutput{
-			User:      nil,
-			ErrStatus: 404,
-			Err:       errors.New(utils.StatusMessage(404)),
-		}
-
-		c <- r
+		c <- output(nil, 401, errors.New(utils.StatusMessage(404)))
 	}
 
 	if err := comparePasswords(u.Password, d.Password); err != nil {
-		r := &types.UserOutput{
-			User:      nil,
-			ErrStatus: 401,
-			Err:       errors.New(utils.StatusMessage(401)),
-		}
-
-		c <- r
+		c <- output(nil, 401, errors.New(utils.StatusMessage(401)))
 	}
 
-	c <- &types.UserOutput{User: u, Err: nil}
+	c <- output(u, 0, nil)
+}
+
+// Output creates default output object.
+func output(u *db.UserModel, s int, err error) *types.UserOutput {
+	return &types.UserOutput{User: u, ErrStatus: s, Err: err}
 }
 
 // Hash given password, and return a hash.

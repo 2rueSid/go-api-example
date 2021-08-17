@@ -24,7 +24,11 @@ func Create(t *types.Token, c chan<- *types.TokenOutput) {
 	).Exec(database.Context)
 
 	if err != nil {
-		r := &types.TokenOutput{Err: errors.New("token not created"), ErrStatus: 500, Token: nil}
+		r := &types.TokenOutput{
+			Err:       errors.New("token not created"),
+			ErrStatus: 500,
+			Token:     nil,
+		}
 
 		c <- r
 		return

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/2rueSid/go-api/cmd/go-api-example/prisma/db"
-	fileModel "github.com/2rueSid/go-api/cmd/go-api-example/src/models/file"
+	fileModel "github.com/2rueSid/go-api/cmd/go-api-example/src/model/file"
 	"github.com/2rueSid/go-api/cmd/go-api-example/src/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/utils"
@@ -23,8 +23,9 @@ const (
 // and return slice of saved files.
 func UploadFiles(c *fiber.Ctx) error {
 	f, err := c.MultipartForm()
-
 	userID := int(c.Locals("CurrentUser").(float64))
+
+	fm := &fileModel.File{}
 
 	fileChanel := make(chan *types.FileOutput)
 
@@ -47,7 +48,7 @@ func UploadFiles(c *fiber.Ctx) error {
 		}
 
 		// Saved file into db.
-		go fileModel.Create(fileInput, fileChanel)
+		go fm.Create(fileInput, fileChanel)
 
 		saved := <-fileChanel
 

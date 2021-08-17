@@ -14,8 +14,12 @@ var (
 	client = database.Client
 )
 
+// File implements Model.
+type File struct {
+}
+
 // Add file to the database.
-func Create(f *types.FileInput, c chan<- *types.FileOutput) {
+func (i *File) Create(f *types.FileInput, c chan<- *types.FileOutput) {
 	d := "/uploads/" + f.Name
 	created, err := client.File.CreateOne(
 		db.File.Name.Set(f.Name),
